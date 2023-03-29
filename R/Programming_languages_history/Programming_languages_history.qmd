@@ -1,0 +1,119 @@
+---
+title: "Programming languages history"
+author: "Flavio Blondeau"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+### Data on tags per year
+
+We want to investigate what are the most used programming languages over the years. To do so, we look at questions and answers posted on <https://stackoverflow.com/>. We will use a dataset containing observations for each **tag** in each year.
+
+### First look at data
+
+We load the tidyverse library
+
+```{r}
+#| label: tidyverse
+#| message: false
+library(tidyverse)
+```
+
+and then we load the dataset and give a first look to the data
+
+```{r}
+#| label: dataset
+#| message: false
+by_tag_year <- read_csv("by_tag_year.csv")
+by_tag_year
+```
+
+Along with **year** and **tag**, we have two other variables, **number** and **year_total**. The first one counts the number of questions posted with the tag, and the second one is the total number of questions in the year.
+
+### Tag percentage
+
+We want to look at the percentage of tag questions over total ones (per year)
+
+```{r}
+#| label: percentage
+
+by_tag_year_perc <- by_tag_year |> 
+  mutate(
+    percentage = round(number /year_total * 100, 2)
+  )
+by_tag_year_perc
+```
+
+What are the most used tags for each year?
+
+```{r}
+#| label: most-used-tag
+
+by_tag_year_perc |> 
+  group_by(year) |> 
+  arrange(desc(percentage)) |> 
+  filter(row_number() == 1) |> 
+  arrange(year)
+```
+
+We can see that the most used tags are *c#* from 2008 to 2011 and *javascript* from 2013 to 2018, while 2012 winner was *java*.
+
+
+### Most used programming languages
+
+We can expand our analysis by considering the top 3 languages for each year
+```{r}
+#| label: most-used-3-tags
+
+top_three <- by_tag_year_perc |> 
+  group_by(year) |> 
+  arrange(desc(percentage)) |> 
+  filter(row_number() %in% c(1,2,3)) |> 
+  arrange(year)
+top_three
+```
+
+Since the table is too long to be seen entirely, we plot a bar graph
+
+```{r}
+#| label: top-three-plot
+
+top_three |> 
+  ggplot(aes(x = year, y = percentage/100, fill = tag)) +
+  geom_bar(position="dodge", stat="identity") +
+  scale_x_continuous(breaks = 2008:2018) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Top 3 programming languages between 2008 and 2018", x = "Year", y = "R tags (percentage)", color = "Tags") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+```
+
+
+
+### What about R?
+
+Let's see the percentages about R
+
+```{r}
+#| label: R-data
+
+r_over_time <- by_tag_year_perc |> 
+  filter(tag == "r")
+r_over_time
+```
+
+We can plot a graph to better understand the trend
+
+```{r}
+#| label: R-plot
+
+r_over_time |> 
+  ggplot(aes(x = year, y = percentage/100)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous("Year", breaks = 2008:2018) +
+  scale_y_continuous("R tags (percentage)", labels = scales::percent)
+```
+
+It seems that R language has become more popular over the years.
