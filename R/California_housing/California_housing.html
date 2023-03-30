@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Flavio Blondeau">
+
+<title>California housing prices</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="California_housing_files/libs/clipboard/clipboard.min.js"></script>
+<script src="California_housing_files/libs/quarto-html/quarto.js"></script>
+<script src="California_housing_files/libs/quarto-html/popper.min.js"></script>
+<script src="California_housing_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="California_housing_files/libs/quarto-html/anchor.min.js"></script>
+<link href="California_housing_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="California_housing_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="California_housing_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="California_housing_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="California_housing_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">California housing prices</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Flavio Blondeau </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="data-import-and-first-look" class="level3">
+<h3 class="anchored" data-anchor-id="data-import-and-first-look">Data import and first look</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We import a dataset from <a href="https://github.com/ageron/handson-ml/tree/master/datasets/housing" class="uri">https://github.com/ageron/handson-ml/tree/master/datasets/housing</a>. It contains data from a 1990 census in California about housing. Each row describes a census block.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"housing.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 20,640
+Columns: 10
+$ longitude          &lt;dbl&gt; -122.23, -122.22, -122.24, -122.25, -122.25, -122.2…
+$ latitude           &lt;dbl&gt; 37.88, 37.86, 37.85, 37.85, 37.85, 37.85, 37.84, 37…
+$ housing_median_age &lt;dbl&gt; 41, 21, 52, 52, 52, 52, 52, 52, 42, 52, 52, 52, 52,…
+$ total_rooms        &lt;dbl&gt; 880, 7099, 1467, 1274, 1627, 919, 2535, 3104, 2555,…
+$ total_bedrooms     &lt;dbl&gt; 129, 1106, 190, 235, 280, 213, 489, 687, 665, 707, …
+$ population         &lt;dbl&gt; 322, 2401, 496, 558, 565, 413, 1094, 1157, 1206, 15…
+$ households         &lt;dbl&gt; 126, 1138, 177, 219, 259, 193, 514, 647, 595, 714, …
+$ median_income      &lt;dbl&gt; 8.3252, 8.3014, 7.2574, 5.6431, 3.8462, 4.0368, 3.6…
+$ median_house_value &lt;dbl&gt; 452600, 358500, 352100, 341300, 342200, 269700, 299…
+$ ocean_proximity    &lt;chr&gt; "NEAR BAY", "NEAR BAY", "NEAR BAY", "NEAR BAY", "NE…</code></pre>
+</div>
+</div>
+<p>Columns’ names seem to be self-explanatory. Let’s take a look at the first rows</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(dataset, <span class="dv">10</span>), <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 13%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">longitude</th>
+<th style="text-align: right;">latitude</th>
+<th style="text-align: right;">housing_median_age</th>
+<th style="text-align: right;">total_rooms</th>
+<th style="text-align: right;">total_bedrooms</th>
+<th style="text-align: right;">population</th>
+<th style="text-align: right;">households</th>
+<th style="text-align: right;">median_income</th>
+<th style="text-align: right;">median_house_value</th>
+<th style="text-align: left;">ocean_proximity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">-122.23</td>
+<td style="text-align: right;">37.88</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">880</td>
+<td style="text-align: right;">129</td>
+<td style="text-align: right;">322</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">8.3252</td>
+<td style="text-align: right;">452600</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">-122.22</td>
+<td style="text-align: right;">37.86</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">7099</td>
+<td style="text-align: right;">1106</td>
+<td style="text-align: right;">2401</td>
+<td style="text-align: right;">1138</td>
+<td style="text-align: right;">8.3014</td>
+<td style="text-align: right;">358500</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">-122.24</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">1467</td>
+<td style="text-align: right;">190</td>
+<td style="text-align: right;">496</td>
+<td style="text-align: right;">177</td>
+<td style="text-align: right;">7.2574</td>
+<td style="text-align: right;">352100</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">1274</td>
+<td style="text-align: right;">235</td>
+<td style="text-align: right;">558</td>
+<td style="text-align: right;">219</td>
+<td style="text-align: right;">5.6431</td>
+<td style="text-align: right;">341300</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">1627</td>
+<td style="text-align: right;">280</td>
+<td style="text-align: right;">565</td>
+<td style="text-align: right;">259</td>
+<td style="text-align: right;">3.8462</td>
+<td style="text-align: right;">342200</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">919</td>
+<td style="text-align: right;">213</td>
+<td style="text-align: right;">413</td>
+<td style="text-align: right;">193</td>
+<td style="text-align: right;">4.0368</td>
+<td style="text-align: right;">269700</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2535</td>
+<td style="text-align: right;">489</td>
+<td style="text-align: right;">1094</td>
+<td style="text-align: right;">514</td>
+<td style="text-align: right;">3.6591</td>
+<td style="text-align: right;">299200</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">3104</td>
+<td style="text-align: right;">687</td>
+<td style="text-align: right;">1157</td>
+<td style="text-align: right;">647</td>
+<td style="text-align: right;">3.1200</td>
+<td style="text-align: right;">241400</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">-122.26</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">2555</td>
+<td style="text-align: right;">665</td>
+<td style="text-align: right;">1206</td>
+<td style="text-align: right;">595</td>
+<td style="text-align: right;">2.0804</td>
+<td style="text-align: right;">226700</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">3549</td>
+<td style="text-align: right;">707</td>
+<td style="text-align: right;">1551</td>
+<td style="text-align: right;">714</td>
+<td style="text-align: right;">3.6912</td>
+<td style="text-align: right;">261100</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>and a summary</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   longitude         latitude     housing_median_age  total_rooms   
+ Min.   :-124.3   Min.   :32.54   Min.   : 1.00      Min.   :    2  
+ 1st Qu.:-121.8   1st Qu.:33.93   1st Qu.:18.00      1st Qu.: 1448  
+ Median :-118.5   Median :34.26   Median :29.00      Median : 2127  
+ Mean   :-119.6   Mean   :35.63   Mean   :28.64      Mean   : 2636  
+ 3rd Qu.:-118.0   3rd Qu.:37.71   3rd Qu.:37.00      3rd Qu.: 3148  
+ Max.   :-114.3   Max.   :41.95   Max.   :52.00      Max.   :39320  
+                                                                    
+ total_bedrooms     population      households     median_income    
+ Min.   :   1.0   Min.   :    3   Min.   :   1.0   Min.   : 0.4999  
+ 1st Qu.: 296.0   1st Qu.:  787   1st Qu.: 280.0   1st Qu.: 2.5634  
+ Median : 435.0   Median : 1166   Median : 409.0   Median : 3.5348  
+ Mean   : 537.9   Mean   : 1425   Mean   : 499.5   Mean   : 3.8707  
+ 3rd Qu.: 647.0   3rd Qu.: 1725   3rd Qu.: 605.0   3rd Qu.: 4.7432  
+ Max.   :6445.0   Max.   :35682   Max.   :6082.0   Max.   :15.0001  
+ NA's   :207                                                        
+ median_house_value ocean_proximity   
+ Min.   : 14999     Length:20640      
+ 1st Qu.:119600     Class :character  
+ Median :179700     Mode  :character  
+ Mean   :206856                       
+ 3rd Qu.:264725                       
+ Max.   :500001                       
+                                      </code></pre>
+</div>
+</div>
+<p>Thus we have 9 numerical variables and 1 categorical variable.</p>
+</section>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<section id="handling-missing-values" class="level3">
+<h3 class="anchored" data-anchor-id="handling-missing-values">Handling missing values</h3>
+<p>First, we look for missing values (alternatively, look at the summary):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">everything</span>(), <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">everything</span>(),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"missing_values"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   variable           missing_values
+   &lt;chr&gt;                       &lt;int&gt;
+ 1 longitude                       0
+ 2 latitude                        0
+ 3 housing_median_age              0
+ 4 total_rooms                     0
+ 5 total_bedrooms                207
+ 6 population                      0
+ 7 households                      0
+ 8 median_income                   0
+ 9 median_house_value              0
+10 ocean_proximity                 0</code></pre>
+</div>
+</div>
+<p>We want to address missing values of <strong>total_bedrooms</strong> by changing them into other values. We first look at the ratio between <strong>total_bedrooms</strong> and <strong>total_rooms</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>room_ratio <span class="ot">&lt;-</span> dataset <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">ratio =</span> <span class="fu">round</span>(total_bedrooms <span class="sc">/</span> total_rooms, <span class="dv">2</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.keep =</span> <span class="st">"used"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(room_ratio, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+   total_rooms total_bedrooms ratio
+         &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt;
+ 1         880            129  0.15
+ 2        7099           1106  0.16
+ 3        1467            190  0.13
+ 4        1274            235  0.18
+ 5        1627            280  0.17
+ 6         919            213  0.23
+ 7        2535            489  0.19
+ 8        3104            687  0.22
+ 9        2555            665  0.26
+10        3549            707  0.2 </code></pre>
+</div>
+</div>
+<p>Then we compute the mean and median of the ratio</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ratio_mean <span class="ot">&lt;-</span>  <span class="fu">mean</span>(room_ratio<span class="sc">$</span>ratio, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>ratio_median <span class="ot">&lt;-</span>  <span class="fu">median</span>(room_ratio<span class="sc">$</span>ratio, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Mean:"</span>, <span class="fu">round</span>(ratio_mean, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Mean: 0.213"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Median:"</span>, <span class="fu">round</span>(ratio_median, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Median: 0.2"</code></pre>
+</div>
+</div>
+<p>The two values are pretty similar, so it does not matter which one we use (here we choose the median). Now we can replace the missing values by multiplying the <strong>total_rooms</strong> by the median value 0.2</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dataset_2 <span class="ot">&lt;-</span> dataset</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>dataset_2<span class="sc">$</span>total_bedrooms[<span class="fu">is.na</span>(dataset_2<span class="sc">$</span>total_bedrooms)] <span class="ot">&lt;-</span> <span class="fu">round</span>(dataset_2<span class="sc">$</span>total_rooms[<span class="fu">is.na</span>(dataset_2<span class="sc">$</span>total_bedrooms)]<span class="sc">*</span>ratio_median)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We check if our code is correct</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dataset_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   longitude         latitude     housing_median_age  total_rooms   
+ Min.   :-124.3   Min.   :32.54   Min.   : 1.00      Min.   :    2  
+ 1st Qu.:-121.8   1st Qu.:33.93   1st Qu.:18.00      1st Qu.: 1448  
+ Median :-118.5   Median :34.26   Median :29.00      Median : 2127  
+ Mean   :-119.6   Mean   :35.63   Mean   :28.64      Mean   : 2636  
+ 3rd Qu.:-118.0   3rd Qu.:37.71   3rd Qu.:37.00      3rd Qu.: 3148  
+ Max.   :-114.3   Max.   :41.95   Max.   :52.00      Max.   :39320  
+ total_bedrooms     population      households     median_income    
+ Min.   :   1.0   Min.   :    3   Min.   :   1.0   Min.   : 0.4999  
+ 1st Qu.: 295.0   1st Qu.:  787   1st Qu.: 280.0   1st Qu.: 2.5634  
+ Median : 435.0   Median : 1166   Median : 409.0   Median : 3.5348  
+ Mean   : 537.6   Mean   : 1425   Mean   : 499.5   Mean   : 3.8707  
+ 3rd Qu.: 647.0   3rd Qu.: 1725   3rd Qu.: 605.0   3rd Qu.: 4.7432  
+ Max.   :6445.0   Max.   :35682   Max.   :6082.0   Max.   :15.0001  
+ median_house_value ocean_proximity   
+ Min.   : 14999     Length:20640      
+ 1st Qu.:119600     Class :character  
+ Median :179700     Mode  :character  
+ Mean   :206856                       
+ 3rd Qu.:264725                       
+ Max.   :500001                       </code></pre>
+</div>
+</div>
+<p>No more missing values! Note that here we have made a choice for replacing NA’s which is not guaranteed to be the best, but it seems quite reasonable.</p>
+</section>
+<section id="data-glimpse" class="level3">
+<h3 class="anchored" data-anchor-id="data-glimpse">Data glimpse</h3>
+<p>We have a better look at the data by plotting them into histograms</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset_2 <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id =</span> <span class="fu">c</span>(<span class="st">"ocean_proximity"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">35</span>) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>variable, <span class="at">scales =</span> <span class="st">'free'</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="California_housing_files/figure-html/histograms-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Looking at the graphs, we see that the scales are very different from each others, so we will need to rescale them in order to use a machine learning method (not tree-based). Also, we see that both <strong>housing_median_age</strong> and <strong>median_house_value</strong> (the latter being our target variable) have an unusual amount of very high values. Maybe we have to cut out these outliers in order to have a good model…</p>
+</section>
+<section id="transform-columns" class="level3">
+<h3 class="anchored" data-anchor-id="transform-columns">Transform columns</h3>
+<p>We see that the majority of variables (when possible) take into account the <em>median value</em> of some quantity, except <strong>total_rooms</strong> and <strong>total_bedrooms</strong>. In order to have a more accurate representation of the data, it is better to transform them into ‘median-type’ data as well</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dataset_2 <span class="ot">&lt;-</span> dataset_2 <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_rooms =</span> <span class="fu">round</span>(total_rooms <span class="sc">/</span> households, <span class="dv">2</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_bedrooms =</span> <span class="fu">round</span>(total_bedrooms <span class="sc">/</span> households, <span class="dv">2</span>),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.after =</span> housing_median_age</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  )  <span class="sc">|&gt;</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(total_rooms, total_bedrooms))</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>dataset_2 <span class="sc">|&gt;</span> </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">longitude</th>
+<th style="text-align: right;">latitude</th>
+<th style="text-align: right;">housing_median_age</th>
+<th style="text-align: right;">median_rooms</th>
+<th style="text-align: right;">median_bedrooms</th>
+<th style="text-align: right;">population</th>
+<th style="text-align: right;">households</th>
+<th style="text-align: right;">median_income</th>
+<th style="text-align: right;">median_house_value</th>
+<th style="text-align: left;">ocean_proximity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">-122.23</td>
+<td style="text-align: right;">37.88</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">6.98</td>
+<td style="text-align: right;">1.02</td>
+<td style="text-align: right;">322</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">8.3252</td>
+<td style="text-align: right;">452600</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">-122.22</td>
+<td style="text-align: right;">37.86</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">6.24</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">2401</td>
+<td style="text-align: right;">1138</td>
+<td style="text-align: right;">8.3014</td>
+<td style="text-align: right;">358500</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">-122.24</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">8.29</td>
+<td style="text-align: right;">1.07</td>
+<td style="text-align: right;">496</td>
+<td style="text-align: right;">177</td>
+<td style="text-align: right;">7.2574</td>
+<td style="text-align: right;">352100</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">5.82</td>
+<td style="text-align: right;">1.07</td>
+<td style="text-align: right;">558</td>
+<td style="text-align: right;">219</td>
+<td style="text-align: right;">5.6431</td>
+<td style="text-align: right;">341300</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">6.28</td>
+<td style="text-align: right;">1.08</td>
+<td style="text-align: right;">565</td>
+<td style="text-align: right;">259</td>
+<td style="text-align: right;">3.8462</td>
+<td style="text-align: right;">342200</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.85</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">4.76</td>
+<td style="text-align: right;">1.10</td>
+<td style="text-align: right;">413</td>
+<td style="text-align: right;">193</td>
+<td style="text-align: right;">4.0368</td>
+<td style="text-align: right;">269700</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">4.93</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">1094</td>
+<td style="text-align: right;">514</td>
+<td style="text-align: right;">3.6591</td>
+<td style="text-align: right;">299200</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">4.80</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">1157</td>
+<td style="text-align: right;">647</td>
+<td style="text-align: right;">3.1200</td>
+<td style="text-align: right;">241400</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">-122.26</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">4.29</td>
+<td style="text-align: right;">1.12</td>
+<td style="text-align: right;">1206</td>
+<td style="text-align: right;">595</td>
+<td style="text-align: right;">2.0804</td>
+<td style="text-align: right;">226700</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">-122.25</td>
+<td style="text-align: right;">37.84</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">4.97</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1551</td>
+<td style="text-align: right;">714</td>
+<td style="text-align: right;">3.6912</td>
+<td style="text-align: right;">261100</td>
+<td style="text-align: left;">NEAR BAY</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="make-dummy-variables" class="level3">
+<h3 class="anchored" data-anchor-id="make-dummy-variables">Make dummy variables</h3>
+<p>Now we focus to the categorical variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>categories <span class="ot">&lt;-</span> dataset_2 <span class="sc">|&gt;</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ocean_proximity) <span class="sc">|&gt;</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 1
+  ocean_proximity
+  &lt;chr&gt;          
+1 NEAR BAY       
+2 &lt;1H OCEAN      
+3 INLAND         
+4 NEAR OCEAN     
+5 ISLAND         </code></pre>
+</div>
+</div>
+<p>We want to transform our categorical variable into 5 boolean columns:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>boolean_proximity <span class="ot">&lt;-</span> dataset_2 <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ocean_proximity) <span class="sc">|&gt;</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowid_to_column</span>(<span class="at">var =</span> <span class="st">"ID"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> ID,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> ocean_proximity,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> value,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_fill =</span> <span class="dv">0</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>ID)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>boolean_proximity <span class="sc">|&gt;</span> </span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">NEAR BAY</th>
+<th style="text-align: right;">&lt;1H OCEAN</th>
+<th style="text-align: right;">INLAND</th>
+<th style="text-align: right;">NEAR OCEAN</th>
+<th style="text-align: right;">ISLAND</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Before merging this table with our dataset, we need to normalize numerical values.</p>
+</section>
+<section id="normalize-values" class="level3">
+<h3 class="anchored" data-anchor-id="normalize-values">Normalize values</h3>
+<p>Let’s look back at the columns’ names</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dataset_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "longitude"          "latitude"           "housing_median_age"
+ [4] "median_rooms"       "median_bedrooms"    "population"        
+ [7] "households"         "median_income"      "median_house_value"
+[10] "ocean_proximity"   </code></pre>
+</div>
+</div>
+<p>We want to normalize all the columns but <strong>ocean_proximity</strong> (because it is categorical) and <strong>median_house_value</strong> (target column)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dataset_normalized <span class="ot">&lt;-</span> dataset_2 <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">c</span>(ocean_proximity, median_house_value)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">everything</span>(),</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">min</span>(x))<span class="sc">/</span>(<span class="fu">max</span>(x)<span class="sc">-</span><span class="fu">min</span>(x))),</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.keep =</span> <span class="st">"none"</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>dataset_normalized <span class="sc">|&gt;</span> </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">longitude</th>
+<th style="text-align: right;">latitude</th>
+<th style="text-align: right;">housing_median_age</th>
+<th style="text-align: right;">median_rooms</th>
+<th style="text-align: right;">median_bedrooms</th>
+<th style="text-align: right;">population</th>
+<th style="text-align: right;">households</th>
+<th style="text-align: right;">median_income</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">0.2111554</td>
+<td style="text-align: right;">0.5674814</td>
+<td style="text-align: right;">0.7843137</td>
+<td style="text-align: right;">0.0434567</td>
+<td style="text-align: right;">0.0204505</td>
+<td style="text-align: right;">0.0089408</td>
+<td style="text-align: right;">0.0205558</td>
+<td style="text-align: right;">0.5396684</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">0.2121514</td>
+<td style="text-align: right;">0.5653560</td>
+<td style="text-align: right;">0.3921569</td>
+<td style="text-align: right;">0.0382107</td>
+<td style="text-align: right;">0.0189686</td>
+<td style="text-align: right;">0.0672104</td>
+<td style="text-align: right;">0.1869758</td>
+<td style="text-align: right;">0.5380271</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">0.2101594</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0527435</td>
+<td style="text-align: right;">0.0219324</td>
+<td style="text-align: right;">0.0138177</td>
+<td style="text-align: right;">0.0289426</td>
+<td style="text-align: right;">0.4660281</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0352332</td>
+<td style="text-align: right;">0.0219324</td>
+<td style="text-align: right;">0.0155554</td>
+<td style="text-align: right;">0.0358494</td>
+<td style="text-align: right;">0.3546986</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0384943</td>
+<td style="text-align: right;">0.0222288</td>
+<td style="text-align: right;">0.0157516</td>
+<td style="text-align: right;">0.0424272</td>
+<td style="text-align: right;">0.2307761</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0277187</td>
+<td style="text-align: right;">0.0228216</td>
+<td style="text-align: right;">0.0114914</td>
+<td style="text-align: right;">0.0315738</td>
+<td style="text-align: right;">0.2439208</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0289239</td>
+<td style="text-align: right;">0.0183758</td>
+<td style="text-align: right;">0.0305782</td>
+<td style="text-align: right;">0.0843611</td>
+<td style="text-align: right;">0.2178729</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0280023</td>
+<td style="text-align: right;">0.0216360</td>
+<td style="text-align: right;">0.0323440</td>
+<td style="text-align: right;">0.1062325</td>
+<td style="text-align: right;">0.1806941</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">0.2081673</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">0.8039216</td>
+<td style="text-align: right;">0.0243868</td>
+<td style="text-align: right;">0.0234143</td>
+<td style="text-align: right;">0.0337173</td>
+<td style="text-align: right;">0.0976813</td>
+<td style="text-align: right;">0.1089985</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0292074</td>
+<td style="text-align: right;">0.0195614</td>
+<td style="text-align: right;">0.0433869</td>
+<td style="text-align: right;">0.1172505</td>
+<td style="text-align: right;">0.2200866</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now we can merge the two tables (and the <strong>median_house_value</strong> column)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dataset_3 <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  dataset_normalized,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  boolean_proximity,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  dataset_2<span class="sc">$</span>median_house_value</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">median_house_value =</span> ...<span class="dv">14</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>dataset_3 <span class="sc">|&gt;</span> </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">longitude</th>
+<th style="text-align: right;">latitude</th>
+<th style="text-align: right;">housing_median_age</th>
+<th style="text-align: right;">median_rooms</th>
+<th style="text-align: right;">median_bedrooms</th>
+<th style="text-align: right;">population</th>
+<th style="text-align: right;">households</th>
+<th style="text-align: right;">median_income</th>
+<th style="text-align: right;">NEAR BAY</th>
+<th style="text-align: right;">&lt;1H OCEAN</th>
+<th style="text-align: right;">INLAND</th>
+<th style="text-align: right;">NEAR OCEAN</th>
+<th style="text-align: right;">ISLAND</th>
+<th style="text-align: right;">median_house_value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">0.2111554</td>
+<td style="text-align: right;">0.5674814</td>
+<td style="text-align: right;">0.7843137</td>
+<td style="text-align: right;">0.0434567</td>
+<td style="text-align: right;">0.0204505</td>
+<td style="text-align: right;">0.0089408</td>
+<td style="text-align: right;">0.0205558</td>
+<td style="text-align: right;">0.5396684</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">452600</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">0.2121514</td>
+<td style="text-align: right;">0.5653560</td>
+<td style="text-align: right;">0.3921569</td>
+<td style="text-align: right;">0.0382107</td>
+<td style="text-align: right;">0.0189686</td>
+<td style="text-align: right;">0.0672104</td>
+<td style="text-align: right;">0.1869758</td>
+<td style="text-align: right;">0.5380271</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">358500</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">0.2101594</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0527435</td>
+<td style="text-align: right;">0.0219324</td>
+<td style="text-align: right;">0.0138177</td>
+<td style="text-align: right;">0.0289426</td>
+<td style="text-align: right;">0.4660281</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">352100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0352332</td>
+<td style="text-align: right;">0.0219324</td>
+<td style="text-align: right;">0.0155554</td>
+<td style="text-align: right;">0.0358494</td>
+<td style="text-align: right;">0.3546986</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">341300</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0384943</td>
+<td style="text-align: right;">0.0222288</td>
+<td style="text-align: right;">0.0157516</td>
+<td style="text-align: right;">0.0424272</td>
+<td style="text-align: right;">0.2307761</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">342200</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0277187</td>
+<td style="text-align: right;">0.0228216</td>
+<td style="text-align: right;">0.0114914</td>
+<td style="text-align: right;">0.0315738</td>
+<td style="text-align: right;">0.2439208</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">269700</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0289239</td>
+<td style="text-align: right;">0.0183758</td>
+<td style="text-align: right;">0.0305782</td>
+<td style="text-align: right;">0.0843611</td>
+<td style="text-align: right;">0.2178729</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">299200</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0280023</td>
+<td style="text-align: right;">0.0216360</td>
+<td style="text-align: right;">0.0323440</td>
+<td style="text-align: right;">0.1062325</td>
+<td style="text-align: right;">0.1806941</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">241400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">0.2081673</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">0.8039216</td>
+<td style="text-align: right;">0.0243868</td>
+<td style="text-align: right;">0.0234143</td>
+<td style="text-align: right;">0.0337173</td>
+<td style="text-align: right;">0.0976813</td>
+<td style="text-align: right;">0.1089985</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">226700</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">0.0292074</td>
+<td style="text-align: right;">0.0195614</td>
+<td style="text-align: right;">0.0433869</td>
+<td style="text-align: right;">0.1172505</td>
+<td style="text-align: right;">0.2200866</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">261100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="predictive-models" class="level2">
+<h2 class="anchored" data-anchor-id="predictive-models">Predictive models</h2>
+<p>Now our dataset is ready for machine learning. Next step involves preprocessing data in order to prepare for fitting a model.</p>
+<section id="split-data" class="level3">
+<h3 class="anchored" data-anchor-id="split-data">Split data</h3>
+<p>We split our dataset into a training and a test set</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>split_data <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(dataset_3, <span class="at">prop =</span> <span class="fl">0.7</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>train_set <span class="ot">&lt;-</span> <span class="fu">training</span>(split_data)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>test_set <span class="ot">&lt;-</span> <span class="fu">testing</span>(split_data)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>train_set <span class="sc">|&gt;</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">7</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">longitude</th>
+<th style="text-align: right;">latitude</th>
+<th style="text-align: right;">housing_median_age</th>
+<th style="text-align: right;">median_rooms</th>
+<th style="text-align: right;">median_bedrooms</th>
+<th style="text-align: right;">population</th>
+<th style="text-align: right;">households</th>
+<th style="text-align: right;">median_income</th>
+<th style="text-align: right;">NEAR BAY</th>
+<th style="text-align: right;">&lt;1H OCEAN</th>
+<th style="text-align: right;">INLAND</th>
+<th style="text-align: right;">NEAR OCEAN</th>
+<th style="text-align: right;">ISLAND</th>
+<th style="text-align: right;">median_house_value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">0.1922311</td>
+<td style="text-align: right;">0.8597237</td>
+<td style="text-align: right;">0.4313725</td>
+<td style="text-align: right;">0.0298455</td>
+<td style="text-align: right;">0.0228216</td>
+<td style="text-align: right;">0.0316433</td>
+<td style="text-align: right;">0.0728499</td>
+<td style="text-align: right;">0.0788265</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">80400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">0.1832669</td>
+<td style="text-align: right;">0.5866100</td>
+<td style="text-align: right;">0.4509804</td>
+<td style="text-align: right;">0.0297746</td>
+<td style="text-align: right;">0.0207469</td>
+<td style="text-align: right;">0.1445949</td>
+<td style="text-align: right;">0.3089952</td>
+<td style="text-align: right;">0.1775355</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">118800</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">0.2171315</td>
+<td style="text-align: right;">0.7194474</td>
+<td style="text-align: right;">0.6666667</td>
+<td style="text-align: right;">0.0355168</td>
+<td style="text-align: right;">0.0245999</td>
+<td style="text-align: right;">0.0390145</td>
+<td style="text-align: right;">0.0781122</td>
+<td style="text-align: right;">0.1422463</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">62700</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">0.7061753</td>
+<td style="text-align: right;">0.0573858</td>
+<td style="text-align: right;">0.2156863</td>
+<td style="text-align: right;">0.0442365</td>
+<td style="text-align: right;">0.0240071</td>
+<td style="text-align: right;">0.0547941</td>
+<td style="text-align: right;">0.1175793</td>
+<td style="text-align: right;">0.3372781</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">299600</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">0.5966135</td>
+<td style="text-align: right;">0.1647184</td>
+<td style="text-align: right;">0.6274510</td>
+<td style="text-align: right;">0.0155962</td>
+<td style="text-align: right;">0.0207469</td>
+<td style="text-align: right;">0.0516270</td>
+<td style="text-align: right;">0.1863180</td>
+<td style="text-align: right;">0.1048675</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">243800</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">0.6484064</td>
+<td style="text-align: right;">0.1434644</td>
+<td style="text-align: right;">0.3529412</td>
+<td style="text-align: right;">0.0388487</td>
+<td style="text-align: right;">0.0189686</td>
+<td style="text-align: right;">0.0500014</td>
+<td style="text-align: right;">0.0919257</td>
+<td style="text-align: right;">0.4333595</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">264300</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">0.6902390</td>
+<td style="text-align: right;">0.1647184</td>
+<td style="text-align: right;">0.5294118</td>
+<td style="text-align: right;">0.0372891</td>
+<td style="text-align: right;">0.0198577</td>
+<td style="text-align: right;">0.0489644</td>
+<td style="text-align: right;">0.0858411</td>
+<td style="text-align: right;">0.2508655</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">128300</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>test_set <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">7</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">longitude</th>
+<th style="text-align: right;">latitude</th>
+<th style="text-align: right;">housing_median_age</th>
+<th style="text-align: right;">median_rooms</th>
+<th style="text-align: right;">median_bedrooms</th>
+<th style="text-align: right;">population</th>
+<th style="text-align: right;">households</th>
+<th style="text-align: right;">median_income</th>
+<th style="text-align: right;">NEAR BAY</th>
+<th style="text-align: right;">&lt;1H OCEAN</th>
+<th style="text-align: right;">INLAND</th>
+<th style="text-align: right;">NEAR OCEAN</th>
+<th style="text-align: right;">ISLAND</th>
+<th style="text-align: right;">median_house_value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">0.2101594</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0527435</td>
+<td style="text-align: right;">0.0219324</td>
+<td style="text-align: right;">0.0138177</td>
+<td style="text-align: right;">0.0289426</td>
+<td style="text-align: right;">0.4660281</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">352100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0384943</td>
+<td style="text-align: right;">0.0222288</td>
+<td style="text-align: right;">0.0157516</td>
+<td style="text-align: right;">0.0424272</td>
+<td style="text-align: right;">0.2307761</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">342200</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">0.2091633</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0280023</td>
+<td style="text-align: right;">0.0216360</td>
+<td style="text-align: right;">0.0323440</td>
+<td style="text-align: right;">0.1062325</td>
+<td style="text-align: right;">0.1806941</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">241400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">0.2081673</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0328229</td>
+<td style="text-align: right;">0.0222288</td>
+<td style="text-align: right;">0.0254211</td>
+<td style="text-align: right;">0.0659431</td>
+<td style="text-align: right;">0.1864250</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">281500</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">0.2081673</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0316886</td>
+<td style="text-align: right;">0.0201541</td>
+<td style="text-align: right;">0.0306903</td>
+<td style="text-align: right;">0.0767966</td>
+<td style="text-align: right;">0.1775907</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">213500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">0.2081673</td>
+<td style="text-align: right;">0.5632306</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0223309</td>
+<td style="text-align: right;">0.0228216</td>
+<td style="text-align: right;">0.0095855</td>
+<td style="text-align: right;">0.0284493</td>
+<td style="text-align: right;">0.1499083</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">191300</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">0.2071713</td>
+<td style="text-align: right;">0.5642933</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0226854</td>
+<td style="text-align: right;">0.0189686</td>
+<td style="text-align: right;">0.0180779</td>
+<td style="text-align: right;">0.0496629</td>
+<td style="text-align: right;">0.1117433</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">155500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="random-forest" class="level3">
+<h3 class="anchored" data-anchor-id="random-forest">Random Forest</h3>
+<p>As a first model, we try to use a Random Forest. We start by initializing the model</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">trees =</span> <span class="dv">1000</span>,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_n =</span> <span class="dv">5</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">"regression"</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>and then training it</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rf_fit <span class="ot">&lt;-</span> rf_model <span class="sc">|&gt;</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_xy</span>(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> train_set <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!</span>median_house_value),</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> train_set <span class="sc">|&gt;</span> <span class="fu">select</span>(median_house_value)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>rf_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+Ranger result
+
+Call:
+ ranger::ranger(x = maybe_data_frame(x), y = y, num.trees = ~1000,      min.node.size = min_rows(~5, x), num.threads = 1, verbose = FALSE,      seed = sample.int(10^5, 1)) 
+
+Type:                             Regression 
+Number of trees:                  1000 
+Sample size:                      14447 
+Number of independent variables:  13 
+Mtry:                             3 
+Target node size:                 5 
+Variable importance mode:         none 
+Splitrule:                        variance 
+OOB prediction error (MSE):       2617894342 
+R squared (OOB):                  0.8049159 </code></pre>
+</div>
+</div>
+<p>At this point, we can make predictions and confront them with the true responses</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>true_vs_pred <span class="ot">&lt;-</span> test_set <span class="sc">|&gt;</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(median_house_value) <span class="sc">|&gt;</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="fu">predict</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    rf_fit,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    test_set <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!</span>median_house_value)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span> </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">difference =</span> median_house_value <span class="sc">-</span> .pred</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>true_vs_pred <span class="sc">|&gt;</span> </span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">median_house_value</th>
+<th style="text-align: right;">.pred</th>
+<th style="text-align: right;">difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">352100</td>
+<td style="text-align: right;">416302.6</td>
+<td style="text-align: right;">-64202.570</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">342200</td>
+<td style="text-align: right;">252215.5</td>
+<td style="text-align: right;">89984.548</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">241400</td>
+<td style="text-align: right;">253299.1</td>
+<td style="text-align: right;">-11899.140</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">281500</td>
+<td style="text-align: right;">223421.6</td>
+<td style="text-align: right;">58078.399</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">213500</td>
+<td style="text-align: right;">225706.0</td>
+<td style="text-align: right;">-12205.972</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">191300</td>
+<td style="text-align: right;">172408.3</td>
+<td style="text-align: right;">18891.741</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">155500</td>
+<td style="text-align: right;">161151.7</td>
+<td style="text-align: right;">-5651.702</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">162900</td>
+<td style="text-align: right;">168848.7</td>
+<td style="text-align: right;">-5948.749</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">147500</td>
+<td style="text-align: right;">123850.7</td>
+<td style="text-align: right;">23649.342</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">113900</td>
+<td style="text-align: right;">153603.1</td>
+<td style="text-align: right;">-39703.053</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Since the table cannot be read entirely, let’s plot true and predicted label in a scatterplot to see what happens</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>true_vs_pred <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> median_house_value, <span class="at">y =</span> .pred), <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">'red'</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Median house value (true labels)"</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Predicted labels"</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Predicted vs true labels for Random Forest"</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red line indicates prefect correspondence"</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="California_housing_files/figure-html/difference-graph-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>As it can be expected, the model is far from perfect. We can see, for example, that the points with higher true-label value are more sparse, and in particular the group of 500,000$ houses is not predicted in a correct way by our model (look at the vertical black line on the right). The last fact may be explained by the presence of a large number of outliers in the dataset (we have already notice this in the ‘Data glimpse’ part).</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

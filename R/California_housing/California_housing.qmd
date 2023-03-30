@@ -1,0 +1,341 @@
+---
+title: "California housing prices"
+author: "Flavio Blondeau"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+### Data import and first look
+
+```{r}
+#| label: import-libraries
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(tidymodels)
+library(caret)
+library(reshape2)
+```
+
+
+We import a dataset from <https://github.com/ageron/handson-ml/tree/master/datasets/housing>. It contains data from a 1990 census in California about housing. Each row describes a census block.
+
+```{r}
+#| label: import-data
+#| message: false
+
+dataset <- read_csv("housing.csv")
+glimpse(dataset)
+```
+
+Columns' names seem to be self-explanatory. Let's take a look at the first rows
+
+```{r}
+#| label: dataset-head
+
+knitr::kable(head(dataset, 10), row.names = TRUE)
+```
+
+and a summary
+
+```{r}
+#| label: dataset-summary
+
+summary(dataset)
+```
+
+Thus we have 9 numerical variables and 1 categorical variable.
+
+
+## Exploratory Data Analysis
+
+### Handling missing values
+
+First, we look for missing values (alternatively, look at the summary):
+
+```{r}
+#| label: missing-values
+
+dataset |> 
+  summarise(
+    across(everything(), function(x) sum(is.na(x)))
+  ) |> 
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "missing_values"
+  )
+```
+
+We want to address missing values of **total_bedrooms** by changing them into other values. We first look at the ratio between **total_bedrooms** and **total_rooms**
+
+```{r}
+#| label: rooms-ratio
+
+room_ratio <- dataset |> 
+  mutate(
+    ratio = round(total_bedrooms / total_rooms, 2),
+    .keep = "used"
+  )
+
+head(room_ratio, 10)
+```
+
+Then we compute the mean and median of the ratio
+
+```{r}
+#| label: ratio-mean-median
+
+ratio_mean <-  mean(room_ratio$ratio, na.rm = TRUE)
+ratio_median <-  median(room_ratio$ratio, na.rm = TRUE)
+
+paste("Mean:", round(ratio_mean, 3))
+paste("Median:", round(ratio_median, 3))
+```
+
+The two values are pretty similar, so it does not matter which one we use (here we choose the median). Now we can replace the missing values by multiplying the **total_rooms** by the median value 0.2
+
+```{r}
+#| label: replace-na
+
+dataset_2 <- dataset
+dataset_2$total_bedrooms[is.na(dataset_2$total_bedrooms)] <- round(dataset_2$total_rooms[is.na(dataset_2$total_bedrooms)]*ratio_median)
+```
+
+We check if our code is correct
+```{r}
+#| label: code-check-1
+
+summary(dataset_2)
+```
+
+No more missing values! Note that here we have made a choice for replacing NA's which is not guaranteed to be the best, but it seems quite reasonable.
+
+
+### Data glimpse
+
+We have a better look at the data by plotting them into histograms
+
+```{r}
+#| label: histograms
+
+dataset_2 |>
+  melt(id = c("ocean_proximity")) |> 
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 35) +
+  facet_wrap(~variable, scales = 'free') +
+  theme_bw()
+```
+
+Looking at the graphs, we see that the scales are very different from each others, so we will need to rescale them in order to use a machine learning method (not tree-based). Also, we see that both **housing_median_age** and **median_house_value** (the latter being our target variable) have an unusual amount of very high values. Maybe we have to cut out these outliers in order to have a good model...
+
+
+### Transform columns
+
+We see that the majority of variables (when possible) take into account the *median value* of some quantity, except **total_rooms** and **total_bedrooms**. In order to have a more accurate representation of the data, it is better to transform them into 'median-type' data as well
+
+```{r}
+#| label: total-to-median
+
+dataset_2 <- dataset_2 |> 
+  mutate(
+    median_rooms = round(total_rooms / households, 2),
+    median_bedrooms = round(total_bedrooms / households, 2),
+    .after = housing_median_age
+  )  |> 
+  select(!c(total_rooms, total_bedrooms))
+
+dataset_2 |> 
+  head(10) |> 
+  knitr::kable(row.names = TRUE)
+```
+
+
+### Make dummy variables
+
+Now we focus to the categorical variable:
+```{r}
+#| label: categories
+
+categories <- dataset_2 |> 
+  select(ocean_proximity) |> 
+  unique()
+
+categories
+```
+
+We want to transform our categorical variable into 5 boolean columns:
+
+```{r}
+#| label: make-dummies
+
+boolean_proximity <- dataset_2 |> 
+  select(ocean_proximity) |> 
+  rowid_to_column(var = "ID") |> 
+  mutate(value = 1) |> 
+  pivot_wider(
+    id_cols = ID,
+    names_from = ocean_proximity,
+    values_from = value,
+    values_fill = 0
+    ) |> 
+  select(-ID)
+
+boolean_proximity |> 
+  head(10) |> 
+  knitr::kable(row.names = TRUE)
+```
+
+Before merging this table with our dataset, we need to normalize numerical values.
+
+
+### Normalize values
+
+Let's look back at the columns' names
+
+```{r}
+#| label: columns-names
+
+colnames(dataset_2)
+```
+
+We want to normalize all the columns but **ocean_proximity** (because it is categorical) and **median_house_value** (target column)
+
+```{r}
+#| label: scale-numeric-col
+
+dataset_normalized <- dataset_2 |> 
+  select(
+    !c(ocean_proximity, median_house_value)
+    ) |> 
+  mutate(
+    across(
+      everything(),
+      function(x) (x - min(x))/(max(x)-min(x))),
+    .keep = "none"
+  )
+
+dataset_normalized |> 
+  head(10) |> 
+  knitr::kable(row.names = TRUE)
+  
+```
+
+Now we can merge the two tables (and the **median_house_value** column)
+
+```{r}
+#| label: merge
+#| message: false
+
+dataset_3 <- bind_cols(
+  dataset_normalized,
+  boolean_proximity,
+  dataset_2$median_house_value
+  ) |> 
+  rename(median_house_value = ...14)
+
+dataset_3 |> 
+  head(10) |> 
+  knitr::kable(row.names = TRUE)
+```
+
+
+## Predictive models
+
+Now our dataset is ready for machine learning. Next step involves preprocessing data in order to prepare for fitting a model.
+
+
+### Split data
+
+We split our dataset into a training and a test set
+
+```{r}
+#| label: split
+#| warning: false
+
+set.seed(42)
+
+split_data <- initial_split(dataset_3, prop = 0.7)
+train_set <- training(split_data)
+test_set <- testing(split_data)
+
+train_set |> 
+  head(7) |> 
+  knitr::kable(row.names = TRUE)
+
+test_set |> 
+  head(7) |> 
+  knitr::kable(row.names = TRUE)
+```
+
+
+### Random Forest
+
+As a first model, we try to use a Random Forest. We start by initializing the model
+
+```{r}
+#| label: initialize-random-forest
+
+rf_model <- rand_forest(
+  trees = 1000,
+  min_n = 5,
+  mode = "regression"
+  )
+```
+
+and then training it
+
+```{r}
+#| label: train-random-forest
+
+rf_fit <- rf_model |> 
+  fit_xy(
+    x = train_set |> select(!median_house_value),
+    y = train_set |> select(median_house_value)
+  )
+
+rf_fit
+```
+
+At this point, we can make predictions and confront them with the true responses
+
+```{r}
+#| label: predictions-random-forest
+
+true_vs_pred <- test_set |> 
+  select(median_house_value) |> 
+  bind_cols(predict(
+    rf_fit,
+    test_set |> select(!median_house_value)
+  )) |> 
+  mutate(
+    difference = median_house_value - .pred
+  )
+
+true_vs_pred |> 
+  head(10) |> 
+  knitr::kable(row.names = TRUE)
+```
+
+Since the table cannot be read entirely, let's plot true and predicted label in a scatterplot to see what happens
+
+```{r}
+#| label: difference-graph
+
+true_vs_pred |> 
+  ggplot() +
+  geom_point(aes(x = median_house_value, y = .pred), alpha = 0.4) +
+  geom_abline(intercept = 0, slope = 1, color = 'red', lwd = 1.5, alpha = 0.7) +
+  labs(
+    x = "Median house value (true labels)",
+    y = "Predicted labels",
+    title = "Predicted vs true labels for Random Forest",
+    subtitle = "Red line indicates prefect correspondence"
+  ) +
+  theme_bw()
+```
+
+As it can be expected, the model is far from perfect. We can see, for example, that the points with higher true-label value are more sparse, and in particular the group of 500,000$ houses is not predicted in a correct way by our model (look at the vertical black line on the right). The last fact may be explained by the presence of a large number of outliers in the dataset (we have already notice this in the 'Data glimpse' part).  
